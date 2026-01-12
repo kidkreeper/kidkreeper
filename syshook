@@ -1,0 +1,23 @@
+-- AdaptiveAI.ravenscript
+
+function OnActorSpawn(actor)
+    if actor.isBot then
+        actor.gameObject:AddComponent("SuppressionComponent")
+    end
+end
+
+function OnActorDied(actor, killer)
+    if actor.team ~= killer.team then
+        BroadcastMoraleShock(actor.position, actor.team)
+    end
+end
+
+function BroadcastMoraleShock(position, team)
+    local actors = ActorManager.GetAliveActorsOnTeam(team)
+    for i, a in ipairs(actors) do
+        local dist = Vector3.Distance(a.position, position)
+        if dist < 30 then
+            a.gameObject:GetComponent("SuppressionComponent"):ApplyMoraleShock(20)
+        end
+    end
+end
