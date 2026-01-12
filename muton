@@ -1,0 +1,9 @@
+using Ravenfield;
+
+public class AdaptiveAIMutator : Mutator
+{
+    public override void OnGameStart()
+    {
+        Debug.Log("Adaptive AI Mutator Loaded");
+    }
+}
