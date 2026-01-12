@@ -1,0 +1,3 @@
+if (civilianDeaths > 12 && faction.paranoia > 0.7f) {
+    TriggerEvent("Curfew");
+}
