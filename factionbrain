@@ -1,0 +1,9 @@
+public class FactionBrain {
+    public float aggression;
+    public float paranoia;
+    public float resources;
+
+    public void Recalculate() {
+        aggression += paranoia * 0.2f;
+    }
+}
