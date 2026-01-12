@@ -1,0 +1,6 @@
+public class EntityState : MonoBehaviour {
+    public float fear;
+    public float loyalty;
+    public float hunger;
+    public List<string> memories;
+}
