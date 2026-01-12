@@ -1,0 +1,68 @@
+using UnityEngine;
+using Ravenfield;
+
+public class SuppressionComponent : MonoBehaviour
+{
+    private Actor actor;
+    private float suppression;
+    private float morale = 100f;
+    private float stress;
+    
+    void Start()
+    {
+        actor = GetComponent<Actor>();
+        InvokeRepeating(nameof(DecayStress), 1f, 1f);
+    }
+
+    void Update()
+    {
+        if (!actor.alive) return;
+
+        EvaluateIncomingFire();
+        ApplyAccuracyPenalty();
+        HandleCoverBehavior();
+    }
+
+    void EvaluateIncomingFire()
+    {
+        if (actor.controller.IsUnderFire())
+        {
+            suppression += Time.deltaTime * 15f;
+            stress += Time.deltaTime * 10f;
+            morale -= Time.deltaTime * 5f;
+        }
+    }
+
+    void HandleCoverBehavior()
+    {
+        if (suppression > 40f && actor.controller.HasCoverNearby())
+        {
+            actor.controller.GoToCover();
+        }
+
+        if (morale < 30f)
+        {
+            actor.controller.HoldPosition();
+            actor.controller.SetStance(Actor.Stance.Prone);
+        }
+    }
+
+    void ApplyAccuracyPenalty()
+    {
+        float penalty = Mathf.Clamp(stress / 100f, 0f, 0.5f);
+        actor.weapon.SetSpreadMultiplier(1f + penalty);
+    }
+
+    void DecayStress()
+    {
+        suppression = Mathf.Max(0, suppression - 10f);
+        stress = Mathf.Max(0, stress - 5f);
+        morale = Mathf.Min(100f, morale + 2f);
+    }
+
+    public void ApplyMoraleShock(float amount)
+    {
+        morale -= amount;
+        stress += amount * 0.5f;
+    }
+}
